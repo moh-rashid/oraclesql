@@ -1,0 +1,161 @@
+/* Mohammed Alrashid */
+/* CS2550 */
+/* SQL Assignment #5 */
+
+/* 1 */
+SELECT 
+    ROUND(AVG(s.tuitionbalance), 2) AS BALANCE, 
+    s.state AS ST 
+FROM 
+    students s 
+GROUP BY 
+    s.state 
+ORDER BY 
+    BALANCE DESC;
+
+/* 2 */
+SELECT 
+    TO_CHAR(r.registrationdate, 'Month') AS REGMONTH, 
+    COUNT(r.studentid) AS NUMSTUDENTS
+FROM 
+    registration r
+GROUP BY 
+    TO_CHAR(r.registrationdate, 'Month')
+ORDER BY 
+    NUMSTUDENTS;
+
+/* 3 */
+SELECT 
+    loc.building AS BUILD, 
+    TO_CHAR(AVG(sec.capacity), 'FM999999.000') AS AVERAGE, 
+    MIN(sec.capacity) AS LOWEST, 
+    MAX(sec.capacity) AS HIGHEST
+FROM 
+    sections sec 
+    JOIN location loc ON sec.locationid = loc.locationid
+GROUP BY 
+    loc.building 
+ORDER BY 
+    BUILD;
+
+
+/* 4 */
+SELECT state AS ST, COUNT(*) AS NUMSTUDENTS
+FROM students
+GROUP BY state
+HAVING COUNT(*) >= 110
+ORDER BY NUMSTUDENTS DESC, ST
+
+
+/* 5 */
+SELECT 
+    COUNT(*) AS NUMSECTIONS, 
+    s.courseid AS COURSEID, 
+    c.subjectcode AS SUBJ, 
+    c.coursenumber AS COURS
+FROM 
+    sections s 
+    JOIN courses c ON s.courseid = c.courseid 
+GROUP BY 
+    s.courseid, c.subjectcode, c.coursenumber 
+HAVING 
+    COUNT(*) > 15 
+ORDER BY 
+    NUMSECTIONS DESC, COURSEID ASC;
+
+
+/* 6 */
+SELECT 
+    COUNT(*) AS NUMSTUDENTS, 
+    p.firstname AS FIRSTNAME, 
+    p.lastname AS LASTNAME 
+FROM 
+    registration r 
+    JOIN sections s ON r.sectionid = s.sectionid 
+    JOIN professor p ON s.professorid = p.professorid 
+GROUP BY 
+    p.professorid, p.firstname, p.lastname 
+HAVING 
+    COUNT(*) >= 50 
+ORDER BY 
+    NUMSTUDENTS DESC, LASTNAME, FIRSTNAME;
+
+/* 7 */
+SELECT 
+    COUNT(*) AS NumSections,
+    s.firstname AS FirstName, 
+    s.lastname AS LastName
+FROM 
+    students s
+    JOIN registration r ON s.studentid = r.studentid
+GROUP BY 
+    s.firstname, 
+    s.lastname
+HAVING 
+    COUNT(*) >= 18
+ORDER BY 
+    NumSections DESC, 
+    LastName, 
+    FirstName;
+
+/* 8 */
+SELECT 
+    c.COURSEID, 
+    c.SUBJECTCODE AS SUBJ, 
+    c.COURSENUMBER AS COURS, 
+    TO_CHAR(AVG(st.TUITIONBALANCE), 'FM999999990.00') AS AVGBAL, 
+    COUNT(r.STUDENTID) AS NUMSTUDENTS
+FROM 
+    COURSES c
+    JOIN SECTIONS s ON c.COURSEID = s.COURSEID
+    JOIN REGISTRATION r ON s.SECTIONID = r.SECTIONID
+    JOIN STUDENTS st ON r.STUDENTID = st.STUDENTID
+GROUP BY 
+    c.COURSEID, c.SUBJECTCODE, c.COURSENUMBER
+HAVING 
+    AVG(st.TUITIONBALANCE) > 5000
+    AND COUNT(r.STUDENTID) >= 20
+ORDER BY 
+    AVGBAL DESC, c.COURSEID;
+
+/* 9 */
+SELECT 
+    COUNT(DISTINCT s.SECTIONID) AS NUMCOURSES,
+    p.PROFESSORID, 
+    p.FIRSTNAME, 
+    p.LASTNAME,
+    TO_CHAR(p.HIREDATE, 'Mon DD YYYY HH:MI AM') AS HIREDATE
+FROM 
+    PROFESSOR p
+    JOIN SECTIONS s ON p.PROFESSORID = s.PROFESSORID
+WHERE 
+    p.HIREDATE > TO_DATE('2018-01-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+GROUP BY 
+    p.PROFESSORID, p.FIRSTNAME, p.LASTNAME, p.HIREDATE
+HAVING 
+    COUNT(DISTINCT s.SECTIONID) >= 10
+ORDER BY 
+    HIREDATE, NUMCOURSES DESC;
+
+/* 10 */
+SELECT 
+    p.PROFESSORID, 
+    p.FIRSTNAME, 
+    p.LASTNAME, 
+        to_char(AVG(s.CAPACITY), 'FM99990.00') AS AVGCAP, 
+    COUNT(s.SECTIONID) AS NUMSECTIONS
+FROM 
+    PROFESSOR p 
+    JOIN SECTIONS s ON p.PROFESSORID = s.PROFESSORID
+GROUP BY 
+    p.PROFESSORID, 
+    p.FIRSTNAME, 
+    p.LASTNAME
+HAVING 
+    AVG(s.CAPACITY) > 35 
+    AND COUNT(s.SECTIONID) > 1
+ORDER BY 
+    COUNT(s.SECTIONID), 
+    AVG(s.CAPACITY), 
+    p.LASTNAME, 
+    p.FIRSTNAME;

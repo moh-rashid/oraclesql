@@ -1,0 +1,138 @@
+/* Mohammed Alrashid */
+/* CS2550 */
+/* SQL Assignment #2 */
+
+/* 1 */
+SELECT
+    firstname                             AS "Fisrt Name",
+    lastname                              AS "Last Name",
+    to_char(admissiondate, 'Mon DD YYYY') AS "Admission Date"
+FROM
+    students
+WHERE
+    to_char(admissiondate, 'Mon DD YYYY') = 'Mar 26 2021'
+ORDER BY
+    lastname,
+    firstname;
+
+/* 2 */
+SELECT
+    sectionid,
+    courseid,
+    to_char(sectionstartdate, 'MM/DD/YYYY HH:MI AM') AS "Section Start Time",
+    locationid
+FROM
+    sections
+WHERE
+    locationid IN ( 2555, 4415, 5943 )
+ORDER BY
+    courseid,
+    sectionstartdate;
+
+/* 3 */
+SELECT
+    courseid,
+    sectionid,
+    to_char(sectionstartdate, 'YYYY-MM-DD HH:MI PM') AS "SECTIONSTARTDATE",
+    professorid,
+    capacity
+FROM
+    sections
+WHERE
+    to_char(sectionstartdate, 'YYYY-MM-DD') = '2019-09-11'
+ORDER BY
+    sectionstartdate DESC,
+    courseid;
+
+/* 4 */
+SELECT
+    studentid,
+    sectionid,
+    to_char(registrationdate, 'Mon DD YYYY HH12:MI PM') AS "Date and time Registered"
+FROM
+    registration
+WHERE
+    registrationdate BETWEEN TO_DATE('Apr 30 2019 10:00:00', 'Mon DD YYYY HH24:MI:SS') AND TO_DATE('May 01 2019 17:00:00', 'Mon DD YYYY HH24:MI:SS')
+ORDER BY
+    registrationdate DESC,
+    sectionid,
+    studentid
+
+
+/* 5 */
+SELECT
+    to_char(TO_DATE('Jan 09 2023', 'Mon DD YYYY') + 110, 'Mon DD YYYY') AS "End Of Semester"
+FROM
+    dual;
+
+
+/* 6 */
+SELECT
+    courseid,
+    sectionid,
+    to_char(sectionstartdate, 'HH12:MI AM') AS "HourDay"
+FROM
+    sections
+WHERE
+        courseid >= 12000
+    AND courseid < 12030
+ORDER BY
+    courseid,
+    sectionid;
+
+
+/* 7 */
+SELECT
+    studentid,
+    firstname,
+    lastname,
+    to_char(admissiondate, 'Mon DD YYYY HH:MI PM') AS "Admission Date"
+FROM
+    students
+WHERE
+        admissiondate >= TO_DATE('29-MAR-2015 12:00 PM', 'DD-MON-YYYY HH:MI PM')
+    AND admissiondate < TO_DATE('29-MAR-2015 12:00 PM', 'DD-MON-YYYY HH:MI PM') + 5
+ORDER BY
+    admissiondate,
+    lastname,
+    firstname;
+
+
+/* 8 */
+SELECT
+    studentid,
+    firstname,
+    lastname,
+    to_char(round(months_between(sysdate, admissiondate) / 12,
+                  2),
+            'FM0.00') AS "YEARS",
+    zip
+FROM
+    students
+WHERE
+    zip LIKE '84%4'
+ORDER BY
+    TO_NUMBER("YEARS"),
+    lastname,
+    firstname;
+
+
+/* 9 */
+SELECT DISTINCT
+    to_char(sectionstartdate, 'Mon YYYY') AS sectionmonths
+FROM
+    sections
+ORDER BY
+    sectionmonths;
+
+/* 10 */
+SELECT
+    firstname,
+    lastname,
+    to_char(admissiondate, 'Mon DD YYYY HH:MI AM') AS admissiondatetime
+FROM
+    students
+WHERE
+    to_char(admissiondate, 'HH:MI AM') = '10:19 AM'
+ORDER BY
+    admissiondate DESC;

@@ -1,0 +1,207 @@
+/* Mohammed Alrashid */
+/* CS2550 */
+/* SQL Assignment #6 */
+
+/* 1 */
+SELECT
+    s.city,
+    s.state  AS st,
+    s.zip,
+    COUNT(*) AS numstudents
+FROM
+    students s
+GROUP BY
+    s.city,
+    s.state,
+    s.zip
+HAVING
+    COUNT(*) >= 30
+ORDER BY
+    numstudents DESC,
+    s.state,
+    s.city;
+
+/* 2 */
+SELECT
+    s.studentid,
+    s.firstname,
+    s.lastname,
+    COUNT(*) AS numcourses
+FROM
+         students s
+    JOIN registration r ON s.studentid = r.studentid
+    JOIN sections     sec ON r.sectionid = sec.sectionid
+    JOIN courses      c ON sec.courseid = c.courseid
+WHERE
+    c.subjectcode = 'CS'
+GROUP BY
+    s.studentid,
+    s.firstname,
+    s.lastname
+HAVING
+    COUNT(*) >= 10
+ORDER BY
+    numcourses DESC,
+    s.lastname,
+    s.firstname;
+
+/* 3 */
+SELECT
+    l.building AS build,
+    COUNT(*)   AS numsections
+FROM
+         sections s
+    JOIN location l ON s.locationid = l.locationid
+    JOIN courses  c ON s.courseid = c.courseid
+WHERE
+    l.building NOT LIKE 'OL%'
+GROUP BY
+    l.building
+HAVING
+    COUNT(*) >= 50
+ORDER BY
+    l.building;
+
+/* 4 */
+SELECT
+    s.firstname,
+    s.lastname,
+    COUNT(r.sectionid) AS numsections
+FROM
+         students s
+    JOIN registration r ON s.studentid = r.studentid
+WHERE
+    s.admissiondate >= TO_DATE('2020-06-15', 'YYYY-MM-DD')
+GROUP BY
+    s.firstname,
+    s.lastname
+HAVING
+    COUNT(r.sectionid) > 10
+ORDER BY
+    numsections DESC,
+    s.lastname,
+    s.firstname;
+
+
+/* 5 */
+SELECT
+    l.building         AS build,
+    l.room,
+    COUNT(r.studentid) AS numstudents
+FROM
+         sections s
+    JOIN location     l ON s.locationid = l.locationid
+    JOIN registration r ON s.sectionid = r.sectionid
+WHERE
+    l.building NOT LIKE 'OL%'
+GROUP BY
+    l.building,
+    l.room
+HAVING
+    COUNT(r.studentid) >= 50
+ORDER BY
+    l.building,
+    l.room,
+    COUNT(r.studentid) DESC;
+
+/* 6 */
+SELECT
+    p.city,
+    p.state  AS st,
+    p.zip,
+    COUNT(*) AS numsections
+FROM
+         professor p
+    INNER JOIN sections s ON p.professorid = s.professorid
+WHERE
+    s.sectionstartdate NOT LIKE '%OL%'
+GROUP BY
+    p.city,
+    p.state,
+    p.zip
+HAVING
+    COUNT(*) >= 25
+ORDER BY
+    numsections,
+    p.zip;
+
+/* 7 */
+SELECT
+    p.city,
+    p.state,
+    COUNT(p.professorid) AS numprofessors,
+    to_char(MIN(p.hiredate), 'YYYY Mon DD HH12:MI PM') AS earliesthiredate
+FROM
+    professor p
+GROUP BY
+    p.city,
+    p.state
+HAVING
+    COUNT(p.professorid) > 20
+ORDER BY
+    MIN(p.hiredate),
+    numprofessors;
+
+/* 8 */
+SELECT
+    c.subjectcode        AS subj,
+    c.coursenumber       AS cours,
+    c.subjectdescription AS subdescription,
+    COUNT(s.sectionid)   AS numsections
+FROM
+         courses c
+    JOIN sections s ON c.courseid = s.courseid
+WHERE
+    c.subjectdescription IN ( 'Computer Science', 'Web and User Experience' )
+GROUP BY
+    c.subjectcode,
+    c.coursenumber,
+    c.subjectdescription
+HAVING
+    COUNT(s.sectionid) > 3
+ORDER BY
+    c.subjectdescription,
+    c.coursenumber;
+
+/* 9 */
+SELECT 
+    s.city,
+    s.state AS ST,
+    to_char(SUM(s.tuitionbalance), '$999999.00') AS totalbal,
+    COUNT(se.sectionid) AS numsections
+FROM 
+    students s
+    INNER JOIN registration r ON s.studentid = r.studentid
+    INNER JOIN sections se ON r.sectionid = se.sectionid
+GROUP BY 
+    s.city, 
+    s.state
+HAVING 
+    SUM(s.tuitionbalance) >= 200000 
+    AND SUM(s.tuitionbalance) < 1000000 
+    AND COUNT(se.sectionid) > 55
+ORDER BY 
+    totalbal, 
+    numsections;
+
+/* 10 */
+SELECT
+    p.firstname,
+    p.lastname,
+    COUNT(*) AS numstudents
+FROM
+         sections s
+    JOIN registration r ON s.sectionid = r.sectionid
+    JOIN students     st ON r.studentid = st.studentid
+    JOIN professor    p ON s.professorid = p.professorid
+WHERE
+    to_char(st.admissiondate, 'YYYY') = '2020'
+GROUP BY
+    p.firstname,
+    p.lastname
+HAVING
+    COUNT(*) >= 5
+ORDER BY
+    p.lastname,
+    p.firstname,
+    numstudents DESC;

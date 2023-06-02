@@ -1,0 +1,180 @@
+/* Mohammed Alrashid */
+/* CS2550 */
+/* SQL Assignment #4 */
+
+/* 1 */
+SELECT DISTINCT
+    s.firstname || ' ' || s.lastname   AS "FULLNAME",
+    s.phone              AS "PHONE",
+    s.city               AS "CITY",
+    s.state              AS "ST",
+    s.zip                AS "ZIP",
+    c.subjectdescription AS "SUBJECTDESCRIPTION"
+FROM
+         students s
+    JOIN registration r ON s.studentid = r.studentid
+    JOIN sections     se ON r.sectionid = se.sectionid
+    JOIN courses      c ON se.courseid = c.courseid
+WHERE
+    c.subjectdescription LIKE '%Engineer%'
+ORDER BY
+    c.subjectdescription,
+    fullname;
+
+/* 2 */
+SELECT 
+    UPPER(SUBSTR(c.subjectcode,1,1))||LOWER(SUBSTR(c.subjectcode,2)) AS "SUCD",
+    c.coursenumber AS "COURS",
+    c.subjectdescription AS "SUBJECTDESCRIPTION"
+FROM 
+    courses c
+WHERE 
+    SUBSTR(c.subjectdescription, 14, 1) = '&'
+ORDER BY 
+    c.subjectdescription,
+    c.coursenumber;
+
+/* 3 */
+SELECT 
+    p.lastname || ', ' || SUBSTR(p.firstname, 1, 1) || '.' AS ProfessorLastFirst,
+    se.sectionid AS SectionID,
+    c.subjectcode AS Subj,
+    c.coursenumber AS CNum
+FROM 
+    sections se
+    JOIN courses c ON se.courseid = c.courseid
+    JOIN professor p ON se.professorid = p.professorid
+WHERE 
+    c.subjectcode = 'WEB' AND 
+    c.coursenumber BETWEEN 3000 AND 4999
+ORDER BY 
+    ProfessorLastFirst, 
+    se.sectionid;
+
+
+/* 4 */
+SELECT 
+    LPAD('*'||s.studentid, 20, '*') AS StudentID,
+    LOWER(s.firstname) AS FirstName,
+    s.lastname AS LastName,
+    s.zip AS ZIP,
+    UPPER(s.city) AS City,
+    s.state AS ST
+FROM 
+    students s
+WHERE 
+    (s.city = 'Aberdeen' AND s.state = 'SD') OR 
+    (s.city = 'Rock Springs' AND s.state = 'WY')
+ORDER BY 
+    s.lastname, 
+    s.firstname, 
+    UPPER(s.city), 
+    s.state;
+
+
+/* 5 */
+SELECT 
+    RPAD(p.firstname || ' ' || p.lastname, 30, '.') AS "Professor Name",
+    p.zip AS ZIP,
+    se.capacity AS Capacity,
+    se.sectionid AS SectionID,
+    c.subjectcode AS Subj,
+    c.coursenumber AS Cours
+FROM 
+    sections se
+    JOIN courses c ON se.courseid = c.courseid
+    JOIN professor p ON se.professorid = p.professorid
+WHERE 
+    c.subjectcode = 'NUTR' AND 
+    se.capacity = 15
+ORDER BY 
+    se.sectionid;
+
+
+/* 6 */
+SELECT 
+    l.locationid AS LocationID,
+    c.subjectcode AS Subj,
+    c.coursenumber AS COURS,
+    s.capacity AS Capacity
+FROM 
+    sections s
+    JOIN courses c ON s.courseid = c.courseid
+    JOIN location l ON s.locationid = l.locationid
+WHERE 
+    (c.subjectcode = 'PE' OR c.subjectcode = 'CS') AND 
+    l.locationid LIKE '_5%'
+ORDER BY 
+    Subj, 
+    COURS, 
+    Capacity;
+
+/* 7 */
+SELECT DISTINCT 
+    s.city AS City, 
+    s.state AS ST, 
+    CASE 
+        WHEN s.state = 'SD' THEN 'South Dakota' 
+        WHEN s.state = 'ID' THEN 'Idaho' 
+    END AS FullStateName
+FROM students s 
+WHERE s.state IN ('SD', 'ID')
+ORDER BY s.city, s.state;
+
+/* 8 */
+SELECT
+    p.firstname
+    || ' '
+    || p.lastname
+    || ' '
+    || p.streetaddress
+    || ' '
+    || p.city
+    || ' '
+    || p.state
+    || ' '
+    || p.zip AS "Mailing Address"
+FROM
+    professor p
+WHERE
+        p.city = 'Aberdeen'
+    AND p.state = 'SD'
+ORDER BY
+    "Mailing Address";
+
+
+/* 9 */
+SELECT 
+    s.firstname AS FirstName, 
+    s.lastname AS LastName, 
+    '$' || TO_CHAR(s.tuitionbalance, 'FM99999.00') AS Tuition, 
+    TO_CHAR(r.registrationdate, 'Mon DD YYYY HH12:MI PM') AS RegDate
+FROM 
+    students s
+    JOIN registration r ON s.studentid = r.studentid
+    JOIN sections se ON r.sectionid = se.sectionid
+WHERE 
+    TO_CHAR(r.registrationdate, 'MM/DD') = '07/31'
+ORDER BY 
+    r.registrationdate DESC;
+
+
+/* 10 */
+SELECT 
+    s.firstname AS FirstName, 
+    s.lastname AS LastName, 
+    '$' || TO_CHAR(s.tuitionbalance, 'FM99999.00') AS Tuition, 
+    CASE
+        WHEN s.tuitionbalance >= 9900 THEN 'Nearing Limit'
+        WHEN s.tuitionbalance >= 9800 AND s.tuitionbalance < 9900 THEN 'Approaching Limit'
+        ELSE ''
+    END AS Message
+FROM 
+    students s
+    JOIN registration r ON s.studentid = r.studentid
+WHERE 
+    s.tuitionbalance >= 9800
+GROUP BY
+    s.firstname, s.lastname, s.tuitionbalance
+ORDER BY 
+    s.tuitionbalance DESC;

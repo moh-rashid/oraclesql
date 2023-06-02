@@ -1,0 +1,141 @@
+/* Mohammed Alrashid */
+/* CS2550 */
+/* SQL Assignment #1 */
+
+/* 1 */
+SELECT
+    custfirstname,
+    custlastname
+FROM
+    customer
+ORDER BY
+    custlastname,
+    custfirstname;
+
+/* 2 */
+SELECT
+    empfirstname,
+    emplastname
+FROM
+    employee
+WHERE
+    emplastname LIKE 'J%'
+ORDER BY
+    emplastname,
+    empfirstname;
+
+/* 3 */
+SELECT
+    custno          AS "Customer",
+    custfirstname || ' ' || custlastname AS "FullName",
+    custcity        AS "CITY",
+    custstate       AS "ST",
+    custzip         AS "ZIP"
+FROM
+    customer
+WHERE
+        custcity = 'Seattle'
+    AND custstate = 'WA'
+ORDER BY
+    custzip,
+    "FullName";
+
+/* 4 */
+SELECT
+    prodno,
+    prodname  AS "Product Name",
+    prodmfg   AS "MANUFACTURER",
+    prodprice AS "Price"
+FROM
+    product
+WHERE
+    prodprice > 50
+ORDER BY
+    prodprice DESC;
+
+
+/* 5 */
+SELECT
+    empfirstname || ' ' || emplastname AS employeename,
+    empphone                      AS "PHONE",
+    to_char(empcommrate, 'FM.00') AS "Commission"
+FROM
+    employee
+WHERE
+        empcommrate >= 0.02
+    AND empcommrate <= 0.04
+ORDER BY
+    empcommrate,
+    empphone;
+
+
+/* 6 */
+SELECT
+    ordno AS "Order",
+    custno AS "Customer",
+    empno AS "employee",
+    ordname "Recipient",
+    ordcity AS "City",
+    ordstate AS "ST"
+FROM
+    ordertbl
+WHERE
+        ordcity = 'Seattle'
+    AND ordstate = 'WA'
+    OR ordcity = 'Denver'
+    AND ordstate = 'CO'
+ORDER BY
+    ordno;
+
+
+/* 7 */
+SELECT
+    ordno AS "Order",
+    prodno AS "Product",
+    qty AS "QUANTITY"
+FROM
+    ordline
+WHERE
+    qty IN ( 10, 5, 3 )
+ORDER BY
+    qty DESC,
+    ordno;
+
+
+/* 8 */
+SELECT
+    ordno,
+    orddate   AS "ORDERDATE",
+    ordname   AS "RECIPIENT",
+    ordstreet AS "STREET",
+    ordcity   AS "CITY",
+    ordstate  AS "ST"
+FROM
+    ordertbl
+WHERE
+    ordname LIKE '%y%'
+ORDER BY
+    ordno;
+
+
+/* 9 */
+SELECT
+    prodno,
+    prodname         AS "PRODUCTNAME",
+    prodmfg          AS "MAUFACTURER",
+    prodprice        AS "PRICE",
+    prodnextshipdate AS "SHIPDATE"
+FROM
+    product
+WHERE
+    prodnextshipdate IS NOT NULL
+ORDER BY
+    prodprice;
+
+/* 10 */
+SELECT DISTINCT
+    ordcity AS "CITY"
+FROM
+    ordertbl
+ORDER BY
+    ordcity ASC;

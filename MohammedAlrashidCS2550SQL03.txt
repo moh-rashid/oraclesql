@@ -1,0 +1,203 @@
+/* Mohammed Alrashid */
+/* CS2550 */
+/* SQL Assignment #3 */
+
+/* 1 */
+SELECT
+    professor.firstname,
+    professor.lastname,
+    professor.phone,
+    to_char(sections.sectionstartdate, 'Mon DD YYYY HH:MI AM') AS sectionstarttime,
+    sections.courseid,
+    professor.state,
+    professor.city
+FROM
+         professor
+    JOIN sections ON professor.professorid = sections.professorid
+WHERE
+        professor.city = 'Denver'
+    AND professor.state = 'CO'
+    AND to_char(sections.sectionstartdate, 'Mon YYYY') = 'Sep 2020'
+ORDER BY
+    sections.sectionstartdate,
+    professor.lastname,
+    professor.firstname;
+
+/* 2 */
+SELECT
+    p.firstname,
+    p.lastname,
+    p.hiredate,
+    s.locationid,
+    s.sectionid,
+    l.building    AS build,
+    l.room,
+    c.subjectcode AS subj,
+    c.coursenumber
+FROM
+         professor p
+    JOIN sections s ON p.professorid = s.professorid
+    JOIN location l ON s.locationid = l.locationid
+    JOIN courses  c ON s.courseid = c.courseid
+WHERE
+        p.lastname = 'Olejniczak'
+    AND p.firstname = 'Juliet'
+ORDER BY
+    c.subjectcode,
+    c.coursenumber,
+    l.room,
+    s.sectionid;
+
+/* 3 */
+SELECT
+    professor.firstname,
+    professor.lastname,
+    to_char(sections.sectionstartdate, 'Mon DD YYYY HH:MI') AS "Section Start Date",
+    sections.capacity,
+    courses.subjectcode                                     AS subj,
+    courses.coursenumber                                    AS cours
+FROM
+         professor
+    JOIN sections ON professor.professorid = sections.professorid
+    JOIN courses ON sections.courseid = courses.courseid
+WHERE
+        sections.capacity > 35
+    AND to_char(sections.sectionstartdate, 'YYYY') = '2018'
+ORDER BY
+    sections.sectionstartdate DESC;
+
+
+/* 4 */
+SELECT
+    students.firstname                                            AS "FIRSTNAME",
+    students.lastname                                             AS "LASTNAME",
+    to_char(registration.registrationdate, 'MM-DD-YYYY HH:MI PM') AS "Registration Date",
+    registration.sectionid                                        AS "SECTIONID",
+    students.state                                                AS "ST"
+FROM
+         students
+    JOIN registration ON students.studentid = registration.studentid
+WHERE
+    students.state IN ( 'UT', 'CO', 'ID' )
+    AND registration.registrationdate >= TO_DATE('04-14-2020 01:00 PM', 'MM-DD-YYYY HH:MI PM')
+    AND registration.registrationdate < TO_DATE('04-19-2020 11:59 PM', 'MM-DD-YYYY HH:MI PM')
+ORDER BY
+    registration.registrationdate;
+
+/* 5 */
+SELECT
+    students.firstname,
+    students.lastname,
+    to_char(registration.registrationdate, 'Mon-DD-YYYY HH:MI PM') AS "Registration Date",
+    registration.finalclassgrade                                   AS fin
+FROM
+         students
+    JOIN registration ON students.studentid = registration.studentid
+WHERE
+    students.lastname LIKE 'H%'
+    AND students.firstname LIKE 'J%'
+ORDER BY
+    students.lastname,
+    students.firstname,
+    registration.registrationdate;
+
+
+/* 6 */
+SELECT
+    courses.courseid,
+    sections.locationid,
+    location.building,
+    courses.subjectcode,
+    courses.coursenumber,
+    to_char(sections.sectionstartdate, 'Mon DD YYYY HH:MI AM') AS "STARTSECTIONTIME"
+FROM
+         courses
+    JOIN sections ON courses.courseid = sections.courseid
+    JOIN location ON sections.locationid = location.locationid
+WHERE
+        courses.subjectcode = 'WEB'
+    AND sections.sectionstartdate >= TO_DATE('01-Apr-2019 12:00 AM', 'DD-Mon-YYYY HH:MI PM')
+    AND sections.sectionstartdate <= TO_DATE('31-Dec-2019 11:59 PM', 'DD-Mon-YYYY HH:MI PM')
+ORDER BY
+    sections.sectionstartdate;
+
+
+/* 7 */
+SELECT
+    students.firstname,
+    students.lastname,
+    to_char(registration.registrationdate, 'Mon DD YYYY HH:MI AM') AS "REGDATE",
+    students.phone,
+    students.tuitionbalance
+FROM
+         students
+    JOIN registration ON students.studentid = registration.studentid
+WHERE
+        students.tuitionbalance > 6000.00
+    AND registration.registrationdate >= TO_DATE('07-29-2020 10:00 AM', 'MM-DD-YYYY HH:MI PM')
+ORDER BY
+    students.lastname,
+    students.firstname;
+
+
+/* 8 */
+SELECT
+    s.firstname                                         AS "FIRSTNAME",
+    s.lastname                                          AS "LASTNAME",
+    c.subjectdescription                                AS "SUBJECTDESCRIPTION",
+    c.courseid                                          AS "COURSEID",
+    to_char(r.registrationdate, 'YYYY Mon DD HH:MI PM') AS "DATEREGISTERED"
+FROM
+         students s
+    JOIN registration r ON s.studentid = r.studentid
+    JOIN sections     se ON r.sectionid = se.sectionid
+    JOIN courses      c ON se.courseid = c.courseid
+WHERE
+    c.subjectdescription = 'Anthropology'
+ORDER BY
+    c.coursenumber,
+    r.registrationdate;
+
+
+/* 9 */
+SELECT
+    s.firstname          AS "FIRSTNAME",
+    s.lastname           AS "LASTNAME",
+    c.subjectdescription AS "SUBJECTDESCRIPTION",
+    c.coursenumber       AS "COURS",
+    r.finalclassgrade    AS "FINA"
+FROM
+         students s
+    JOIN registration r ON s.studentid = r.studentid
+    JOIN sections     se ON r.sectionid = se.sectionid
+    JOIN courses      c ON se.courseid = c.courseid
+WHERE
+        c.subjectdescription = 'Web and User Experience'
+    AND c.coursenumber BETWEEN 3000 AND 3200
+    AND ( r.finalclassgrade LIKE 'A%'
+          OR r.finalclassgrade LIKE 'B%' )
+ORDER BY
+    c.coursenumber,
+    r.finalclassgrade,
+    s.lastname,
+    s.firstname;
+
+/* 10 */
+SELECT DISTINCT
+    s.firstname AS "STUDENTFIRST",
+    s.lastname  AS "STUDENTLAST",
+    p.firstname AS "PROFESSORFIRST",
+    p.lastname  AS "PROFESSORLAST",
+    s.city      AS "ST",
+    p.city      AS "CITY"
+FROM
+         students s
+    JOIN registration r ON s.studentid = r.studentid
+    JOIN sections     se ON r.sectionid = se.sectionid
+    JOIN professor    p ON se.professorid = p.professorid
+WHERE
+        s.state = 'ID'
+    AND s.city = p.city
+ORDER BY
+    s.lastname,
+    s.firstname;
